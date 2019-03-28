@@ -1,0 +1,45 @@
+import pypyodbc as pyodbc # you could alias it to existing pyodbc code (not every code is compatible)
+from textblob import TextBlob
+
+db_host = 'localhost\sqlexpress'
+db_name = 'EEComments'
+db_user = 'esnider1'
+db_password = 'Ilove1daho'
+connection_string = 'Driver={SQL Server};Server=' + db_host + ';Database=' + db_name + ';UID=' + db_user + ';PWD=' + db_password + ';'
+
+db = pyodbc.connect(connection_string)
+cursor = db.cursor()
+
+SQL = "SELECT TOP 10 * FROM dbo.ResponseComments"
+cursor.execute(SQL)
+
+SQL = "CREATE TABLE dbo.saleout (id int identity(1,1),product_name VARCHAR(255))"
+cursor.execute(SQL)
+
+SQL = "INSERT INTO dbo.saleout(product_name)" \
+      "VALUES('TACOS')"
+cursor.execute(SQL)
+
+# insert 10 records
+#calling stored procedure
+SQL = "execute LoadDummyData 10"
+cursor.execute(SQL)
+
+#select data and return all results
+SQL = "select * from dbo.saleout"
+cursor.execute(SQL)
+print("fetchall:")
+result = cursor.fetchall()
+for r in result:
+    print(r)
+
+# select 1 record
+cursor.execute(SQL)
+print("\nfetch one:")
+result = cursor.fetchone()
+print(result)
+
+cursor.commit()
+
+cursor.close()
+db.close()
